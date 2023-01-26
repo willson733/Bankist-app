@@ -7,6 +7,11 @@ const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+const btnScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.querySelector('#section--1');
+const tabContainer = document.querySelector('.operations__tab-container');
+const tabs = document.querySelectorAll('.operations__tab');
+const tabContent = document.querySelectorAll('.operations__content');
 
 const openModal = function (e) {
   e.preventDefault();
@@ -51,9 +56,6 @@ document
 
 // scrolling
 
-const btnScrollTo = document.querySelector('.btn--scroll-to');
-const section1 = document.querySelector('#section--1');
-
 btnScrollTo.addEventListener('click', function (e) {
   const s1coords = section1.getBoundingClientRect();
   // window.scrollTo(
@@ -92,9 +94,6 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
 });
 
 // Tabbed component
-const tabContainer = document.querySelector('.operations__tab-container');
-const tabs = document.querySelectorAll('.operations__tab');
-const tabContent = document.querySelectorAll('.operations__content');
 
 tabContainer.addEventListener('click', function (e) {
   const clicked = e.target.closest('.operations__tab');
@@ -103,6 +102,8 @@ tabContainer.addEventListener('click', function (e) {
   tabs.forEach(t => t.classList.remove('operations__tab--active'));
   tabContent.forEach(t => t.classList.remove('operations__content--active'));
 
+  // gaurd clause
+  if (!clicked) return;
   // active tab
   clicked.classList.add('operations__tab--active');
 
@@ -111,4 +112,34 @@ tabContainer.addEventListener('click', function (e) {
   document
     .querySelector(`.operations__content--${clicked.dataset.tab}`)
     .classList.add('operations__content--active');
+});
+
+// Menu fade animation
+const nav = document.querySelector('.nav');
+const handleOver = function (e, opacity) {
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const sibling = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+    sibling.forEach(el => {
+      if (el !== link) el.style.opacity = opacity;
+    });
+    logo.style.opacity = opacity;
+  }
+};
+
+nav.addEventListener('mouseout', function (e) {
+  handleOver(e, 1);
+});
+
+nav.addEventListener('mouseover', function (e) {
+  handleOver(e, 0.5);
+});
+
+// Sticky navigation
+const initialcoodr = section1.getBoundingClientRect();
+console.log(initialcoodr);
+window.addEventListener('scroll', function () {
+  if (window.scrollY > initialcoodr.top) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
 });
